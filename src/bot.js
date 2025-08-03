@@ -8,7 +8,7 @@ const { LLMChain } = require("langchain/chains");
 const axios = require("axios");
 
 const ollama = new Ollama({
-  model: "llama3",
+  model: "llama3.2:1b",
   requestOptions: {
     timeout: 120000, // 60 seconds,
   },
@@ -70,7 +70,9 @@ client.on("messageCreate", async (msg) => {
   // if message starts with generate or Generate
   if (
     msg.content.startsWith("generate") ||
-    msg.content.startsWith("Generate")
+    msg.content.startsWith("Generate") ||
+    msg.content.startsWith("create") ||
+    msg.content.startsWith("Create")
   ) {
     console.log("Generating image...");
     try {
@@ -132,18 +134,20 @@ client.on("messageCreate", async (msg) => {
   });
 
   try {
+    const replyMsg = await msg.channel.send("Let me think...");
+
     const res = await chain.invoke({
       message: msg.content.slice(0, 500), // Limit message length
       lastmessages: lastMessages,
     });
 
     if (res?.text) {
-      msg.channel.send(res.text);
+      msg.channel.edit(res.text);
     } else {
-      msg.channel.send("Sorry, I couldn't generate a reply.");
+      msg.channel.edit("Sorry, I couldn't generate a reply.");
     }
   } catch (error) {
     console.error("Error invoking LLM:", error);
-    msg.channel.send("Oops! Something went wrong with the AI.");
+    msg.channel.send("Server is too slow, or the an error occured");
   }
 });
