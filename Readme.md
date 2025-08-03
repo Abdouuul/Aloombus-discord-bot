@@ -10,3 +10,5 @@ Discord chatbot, using llama3, it is able to have conversation with discord user
 
 
 ##### Currently in development. . .💻
+
+Deployed on homelab
