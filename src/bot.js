@@ -8,7 +8,7 @@ const { LLMChain } = require("langchain/chains");
 const axios = require("axios");
 
 const ollama = new Ollama({
-  model: "llama3.2:1b",
+  model: "llama3",
   requestOptions: {
     timeout: 120000, // 60 seconds,
   },
@@ -142,9 +142,9 @@ client.on("messageCreate", async (msg) => {
     });
 
     if (res?.text) {
-      msg.channel.edit(res.text);
+      replyMsg.edit(res.text);
     } else {
-      msg.channel.edit("Sorry, I couldn't generate a reply.");
+      replyMsg.edit("Sorry, I couldn't generate a reply.");
     }
   } catch (error) {
     console.error("Error invoking LLM:", error);
