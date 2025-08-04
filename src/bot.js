@@ -2,13 +2,14 @@ require("dotenv").config();
 const { token } = process.env;
 const Discord = require("discord.js");
 const fs = require("fs");
-const { Ollama } = require("@langchain/ollama");
+// const { Ollama } = require("@langchain/ollama");
+const { Ollama } = require("@langchain/community/llms/ollama");
 const { ChatPromptTemplate } = require("@langchain/core/prompts");
 const { LLMChain } = require("langchain/chains");
 const axios = require("axios");
 
 const ollama = new Ollama({
-  model: "llama3",
+  model: "tinyllama",
   requestOptions: {
     timeout: 120000, // 60 seconds,
   },
