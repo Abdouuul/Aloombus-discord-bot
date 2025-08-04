@@ -15,6 +15,12 @@ const ollama = new Ollama({
   },
 });
 
+function withTimeout(promise, ms) {
+  const timeout = new Promise((_, reject) =>
+    setTimeout(() => reject(new Error("Request timed out")), ms)
+  );
+  return Promise.race([promise, timeout]);
+}
 const client = new Discord.Client({
   intents: [
     Discord.GatewayIntentBits.Guilds,
@@ -137,10 +143,12 @@ client.on("messageCreate", async (msg) => {
   try {
     const replyMsg = await msg.channel.send("Let me think...");
 
-    const res = await chain.invoke({
-      message: msg.content.slice(0, 500), // Limit message length
-      lastmessages: lastMessages,
-    });
+    const res = await withTimeout(
+      chain.invoke({
+        message: msg.content.slice(0, 500), // Limit message length
+        lastmessages: lastMessages,
+      })
+    );
 
     if (res?.text) {
       replyMsg.edit(res.text);
