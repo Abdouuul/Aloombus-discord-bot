@@ -97,8 +97,9 @@ client.on("messageCreate", async (msg) => {
     return;
   }
 
-  const isMention = msg.mentions.has(client.user) || true;
-  const shouldRespond = isMention; // Add your logic here
+  const isMention = msg.mentions.has(client.user) ;
+  const shouldRespond = isMention;
+  
   if (!shouldRespond) return;
 
   await msg.channel.sendTyping();
