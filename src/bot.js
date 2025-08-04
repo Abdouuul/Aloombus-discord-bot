@@ -8,6 +8,8 @@ const { ChatPromptTemplate } = require("@langchain/core/prompts");
 const { LLMChain } = require("langchain/chains");
 const axios = require("axios");
 
+let isBusy = false;
+
 const ollama = new Ollama({
   model: "tinyllama",
   requestOptions: {
@@ -67,6 +69,11 @@ async function fetchGeneratedImage(prompt) {
 
 client.on("messageCreate", async (msg) => {
   if (msg.author.bot) return;
+
+  if (isBusy) {
+    msg.channel.send("⏳ I'm still thinking... Please wait a moment.");
+    return;
+  }
 
   // if message starts with generate or Generate
   if (
@@ -135,6 +142,7 @@ client.on("messageCreate", async (msg) => {
   });
 
   try {
+    isBusy = true;
     const replyMsg = await msg.channel.send("Let me think...");
 
     const res = await chain.invoke({
@@ -150,5 +158,7 @@ client.on("messageCreate", async (msg) => {
   } catch (error) {
     console.error("Error invoking LLM:", error);
     msg.channel.send("Server is too slow, or the an error occured");
+  } finally {
+    isBusy = false;
   }
 });
