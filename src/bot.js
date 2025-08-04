@@ -2,8 +2,7 @@ require("dotenv").config();
 const { token } = process.env;
 const Discord = require("discord.js");
 const fs = require("fs");
-// const { Ollama } = require("@langchain/ollama");
-const { Ollama } = require("@langchain/community/llms/ollama");
+const { Ollama } = require("@langchain/ollama");
 const { ChatPromptTemplate } = require("@langchain/core/prompts");
 const { LLMChain } = require("langchain/chains");
 const axios = require("axios");
@@ -15,12 +14,6 @@ const ollama = new Ollama({
   },
 });
 
-function withTimeout(promise, ms) {
-  const timeout = new Promise((_, reject) =>
-    setTimeout(() => reject(new Error("Request timed out")), ms)
-  );
-  return Promise.race([promise, timeout]);
-}
 const client = new Discord.Client({
   intents: [
     Discord.GatewayIntentBits.Guilds,
@@ -143,12 +136,10 @@ client.on("messageCreate", async (msg) => {
   try {
     const replyMsg = await msg.channel.send("Let me think...");
 
-    const res = await withTimeout(
-      chain.invoke({
-        message: msg.content.slice(0, 500), // Limit message length
-        lastmessages: lastMessages,
-      })
-    );
+    const res = await chain.invoke({
+      message: msg.content.slice(0, 500), // Limit message length
+      lastmessages: lastMessages,
+    });
 
     if (res?.text) {
       replyMsg.edit(res.text);
