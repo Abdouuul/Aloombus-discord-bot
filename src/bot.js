@@ -158,7 +158,7 @@ client.on("messageCreate", async (msg) => {
     }
   } catch (error) {
     console.error("Error invoking LLM:", error);
-    msg.channel.send("Server is too slow, or the an error occured");
+    msg.channel.send("Server is too slow, or LLM is not available.");
   } finally {
     isBusy = false;
   }
