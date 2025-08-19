@@ -11,7 +11,7 @@ const axios = require("axios");
 let isBusy = false;
 
 const ollama = new Ollama({
-  model: "llama3.2:1b",
+  model: "llama3",
   requestOptions: {
     timeout: 300000, // 60 seconds,
   },
