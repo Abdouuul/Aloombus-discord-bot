@@ -38,8 +38,7 @@ async function enforce(message, member, feature, settings, title, score, reasons
     results.push(`could not delete message (${error.message})`);
   }
 
-  // Art promotion never kicks, whatever the stored action says
-  if (settings.action === "delete_kick" && feature !== "artPromo") {
+  if (settings.action === "delete_kick" && feature === "scam") {
     if (member.kickable) {
       try {
         await member.kick(`${title}: ${reasons.join(", ")}`);
